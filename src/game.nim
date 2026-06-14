@@ -64,6 +64,9 @@ proc spawnEnemy(self: Game, spawnEvent: SpawnEvent) =
     of ExploderSpawn:
         var e = newExploder(spawnEvent.x, spawnEvent.y, spawnEvent.targetX, spawnEvent.targetY)
         self.registerGameObject(e)
+    of FloaterSpawn:
+        var e = newFloater(spawnEvent.x, spawnEvent.y)
+        self.registerGameObject(e)
     of GridBombSpawn:
         var e = newGridBomb(spawnEvent.x, spawnEvent.y)
         self.registerGameObject(e)

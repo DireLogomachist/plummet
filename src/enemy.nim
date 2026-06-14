@@ -134,6 +134,38 @@ method update*(self: Exploder, deltatime: float) =
     if self.health <= 0:
         self.die()
 
+## Floater
+
+type
+    Floater* = ref object of Enemy
+        speed*: float = - 0.01
+        lateralSpeed: float = 0.4
+
+proc newFloater*(x: float, y: float): Floater =
+    var f = Floater()
+    f.loc = (x: x, y: y)
+    f.sprite = SpriteDrawable(size: (w: 16, h: 16), spriteFile: "floater.png")
+    f.sprite.parent = f
+
+    var col: ColliderBox = ColliderBox(size: (w: 7, h: 7))
+    f.addCollider(col)
+
+    return f
+
+method update*(self: Floater, deltatime: float) =
+    procCall self.GameObject.update(deltatime)
+
+    # Wait 1 second, then float upwards
+    if self.lifeTimer > 1.0:
+        self.loc.y += self.speed * deltatime
+        self.loc.x += self.lateralSpeed * (math.sin(self.lifeTimer) / (2*math.PI))
+
+    if self.loc.y < 0.0:
+        self.die()
+
+    if self.health <= 0:
+        self.die()
+
 ## GridBomb
 
 type
