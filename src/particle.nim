@@ -11,21 +11,21 @@ type
     ParticleSystem* = ref object of GameObject
         particles*: seq[Particle]
         spawnRate*: float = 100             # Per second
-        particleVelocity*: float = 0.2f
-        particleLifetime*: float = 1.0f     # Seconds
-        timeSinceLastSpawn: float = 0.0f    # Seconds
+        particleVelocity*: float = 0.2
+        particleLifetime*: float = 1.0      # Seconds
+        timeSinceLastSpawn: float = 0.0     # Seconds
         particleFreeBuffer: seq[int]
 
     Particle* = ref object of Drawable
-        lifetime*: float = 0.0f             # Seconds
-        velocity*: float = 0.0f
+        lifetime*: float = 0.0              # Seconds
+        velocity*: float = 0.0 
 
     StreamParticleSystem* = ref object of ParticleSystem
-        spawnDirection*: float = 0.0f
-        spawnSpread*: float = 0.0f
+        spawnDirection*: float = 0.0
+        spawnSpread*: float = 0.0
 
     LineParticleSystem* = ref object of ParticleSystem
-        lineLength*: float = 156.0f
+        lineLength*: float = 156.0
         isHorizontal*: bool = true
 
 method draw*(self: Particle, context: CanvasContext) = 
@@ -46,7 +46,7 @@ method spawn*(self: ParticleSystem) =
     if self.particleFreeBuffer.len > 0:
         var newParticle = self.particles[self.particleFreeBuffer.pop()]
         newParticle.enabled = true
-        newParticle.lifetime = 0.0f
+        newParticle.lifetime = 0.0
         newParticle.loc = self.getGlobalLocation()
         newParticle.velocity = self.particleVelocity
     else:
@@ -64,9 +64,9 @@ method draw*(self: ParticleSystem, context: CanvasContext) =
 
 method update*(self: ParticleSystem, deltatime: float) = 
     self.timeSinceLastSpawn = self.timeSinceLastSpawn + deltatime
-    if self.timeSinceLastSpawn > 1000.0f/self.spawnRate:
+    if self.timeSinceLastSpawn > 1000.0/self.spawnRate:
         self.spawn()
-        self.timeSinceLastSpawn = 0.0f
+        self.timeSinceLastSpawn = 0.0
 
     for i, particle in self.particles:
         particle.update(deltatime)
@@ -83,7 +83,7 @@ method spawn*(self: LineParticleSystem) =
     if self.particleFreeBuffer.len > 0:
         var newParticle = self.particles[self.particleFreeBuffer.pop()]
         newParticle.enabled = true
-        newParticle.lifetime = 0.0f
+        newParticle.lifetime = 0.0
         var spawnLoc = self.getGlobalLocation()
         if self.isHorizontal:
             spawnLoc.x += randomOffset

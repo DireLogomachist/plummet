@@ -25,9 +25,9 @@ type
         canvasContext*: CanvasContext
         canvasColor* = cstring("#7b8210")
         canvasWidth* = 512
-        deltaTime*: float = 0.0f
+        deltaTime*: float = 0.0
         lastUpdate*: Time
-        levelTimer*: float = 0.0f
+        levelTimer*: float = 0.0
         nextSpawnIdx*: int = 0
         currentLevel*: seq[SpawnEvent]
 
@@ -119,7 +119,7 @@ proc update*(self: Game) =
     self.lastUpdate = currentTime
 
     # Update level timer
-    self.levelTimer += self.deltaTime / 1000.0f
+    self.levelTimer += self.deltaTime / 1000.0
 
     # Check level spawns
     self.updateLevelSpawns()

@@ -11,12 +11,12 @@ type
         sprite*: Drawable
         enabled*: bool = true
         dead*: bool = false
-        lifeTimer*: float = 0.0f
+        lifeTimer*: float = 0.0
 
         colliders*: seq[Collider]
         onCollisionCooldown*: bool = false
-        collisionCooldown*: float = 0.5f
-        collisionTimer*: float = 0.0f
+        collisionCooldown*: float = 0.5
+        collisionTimer*: float = 0.0
 
 method onCollide*(self: GameObject) {.base.} = 
     discard
@@ -24,8 +24,8 @@ method onCollide*(self: GameObject) {.base.} =
 proc updateCollisionTimer*(self: GameObject, deltatime: float) = 
     if self.onCollisionCooldown:
         self.collisionTimer -= deltatime/1000
-        if self.collisionTimer < 0.0f:
-            self.collisionTimer = 0.0f
+        if self.collisionTimer < 0.0:
+            self.collisionTimer = 0.0
             self.onCollisionCooldown = false
 
 proc addCollider*(self: GameObject, collider: Collider) = 

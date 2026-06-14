@@ -47,7 +47,7 @@ method update*(self: Enemy, deltatime: float) =
 
 type
     Diver* = ref object of Enemy
-        speed*: float = - 0.2f
+        speed*: float = - 0.2
 
 proc newDiver*(x: float, y: float): Diver =
     var d = Diver()
@@ -64,10 +64,10 @@ method update*(self: Diver, deltatime: float) =
     procCall self.GameObject.update(deltatime)
 
     # Wait 1 second, then dive
-    if self.lifeTimer > 1.0f:
+    if self.lifeTimer > 1.0:
         self.loc.y += self.speed * deltatime
 
-    if self.loc.y < 0.0f:
+    if self.loc.y < 0.0:
         self.die()
 
     if self.health <= 0:
@@ -77,11 +77,11 @@ method update*(self: Diver, deltatime: float) =
 
 type
     Exploder* = ref object of Enemy
-        speed*: float = 0.08f
+        speed*: float = 0.08
         targetPos*: (float, float)
         reachedTarget*: bool = false
-        detonationTimer*: float = 0.0f
-        detonationDuration*: float = 0.5f
+        detonationTimer*: float = 0.0
+        detonationDuration*: float = 0.5
         isDetonating*: bool = false
 
 proc newExploder*(x: float, y: float, targetX: float, targetY: float): Exploder =
@@ -103,22 +103,23 @@ method update*(self: Exploder, deltatime: float) =
     if not self.isDetonating:
         # Approach target position
         if not self.reachedTarget:
-            let dx = self.targetPos[0] - self.loc.x
-            let dy = self.targetPos[1] - self.loc.y
-            let dist = math.sqrt(dx * dx + dy * dy)
-            
-            if dist > 2.0f:
-                let dirX = dx / dist
-                let dirY = dy / dist
-                self.loc.x += dirX * self.speed * deltatime
-                self.loc.y += dirY * self.speed * deltatime
-            else:
-                self.reachedTarget = true
+            if self.lifeTimer > 1.0:
+                let dx = self.targetPos[0] - self.loc.x
+                let dy = self.targetPos[1] - self.loc.y
+                let dist = math.sqrt(dx * dx + dy * dy)
+                
+                if dist > 2.0:
+                    let dirX = dx / dist
+                    let dirY = dy / dist
+                    self.loc.x += dirX * self.speed * deltatime
+                    self.loc.y += dirY * self.speed * deltatime
+                else:
+                    self.reachedTarget = true
         
         # Wait at target, then detonate
-        if self.reachedTarget and self.lifeTimer > 1.0f:
+        if self.reachedTarget and self.lifeTimer > 1.0:
             self.isDetonating = true
-            self.detonationTimer = 0.0f
+            self.detonationTimer = 0.0
             # Swap to large explosion collider
             self.colliders.setLen(0)
             var explosionCol: ColliderBox = ColliderBox(size: (w: 40, h: 40))
@@ -126,7 +127,7 @@ method update*(self: Exploder, deltatime: float) =
             self.addCollider(explosionCol)
     else:
         # Detonation active—count down
-        self.detonationTimer += deltatime / 1000.0f
+        self.detonationTimer += deltatime / 1000.0
         if self.detonationTimer > self.detonationDuration:
             self.die()
 
@@ -137,8 +138,8 @@ method update*(self: Exploder, deltatime: float) =
 
 type
     GridBomb* = ref object of Enemy
-        detonationTimer*: float = 2.0f
-        detonationDuration*: float = 0.5f
+        detonationTimer*: float = 2.0
+        detonationDuration*: float = 0.5
 
 proc newGridBomb*(x: float, y: float): GridBomb =
     var g = GridBomb()

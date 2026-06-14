@@ -27,10 +27,10 @@ proc getGlobalLocation*(self: TransformObject): Coordinate =
         return self.loc
 
 proc rotationCast(x: float): Rotation =
-    if x > 360.0f:
-        return Rotation(x - 360.0f)
-    if x < 0.0f:
-        return Rotation(x + 360.0f)
+    if x > 360.0:
+        return Rotation(x - 360.0)
+    if x < 0.0:
+        return Rotation(x + 360.0)
     return Rotation(x)
 
 proc `+`*(a: Rotation, b: float): Rotation =

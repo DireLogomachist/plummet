@@ -6,7 +6,7 @@ type
     triggerTime*: float      # Seconds into level
     enemyType*: EnemySpawnType
     x*, y*: float
-    targetX*, targetY*: float = 0.0f  # For Exploder
+    targetX*, targetY*: float = 0.0   # For Exploder
 
   Level* = object
     name*: string
