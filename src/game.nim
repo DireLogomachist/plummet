@@ -28,8 +28,8 @@ type
         deltaTime*: float = 0.0
         lastUpdate*: Time
         levelTimer*: float = 0.0
-        nextSpawnIdx*: int = 0
-        currentLevel*: seq[SpawnEvent]
+        eventIndex*:  int = -1
+        currentLevel*: seq[LevelEvent]
 
     Key* {.pure.} = enum
         LeftArrow = 37, UpArrow = 38,
@@ -72,10 +72,17 @@ proc spawnEnemy(self: Game, spawnEvent: SpawnEvent) =
         self.registerGameObject(e)
 
 proc updateLevelSpawns(self: Game) =
-    while self.nextSpawnIdx < self.currentLevel.len and 
-          self.levelTimer >= self.currentLevel[self.nextSpawnIdx].triggerTime:
-        self.spawnEnemy(self.currentLevel[self.nextSpawnIdx])
-        self.nextSpawnIdx += 1
+    if self.eventIndex < 0:
+        self.eventIndex = 0
+        self.levelTimer += self.currentLevel[self.eventIndex].time
+    
+    while self.eventIndex < self.currentLevel.len and self.levelTimer <= 0.0:
+        if self.currentLevel[self.eventIndex] of SpawnEvent:
+            self.spawnEnemy(SpawnEvent(self.currentLevel[self.eventIndex]))
+        self.eventIndex += 1
+        if self.eventIndex < self.currentLevel.len:
+            self.levelTimer += self.currentLevel[self.eventIndex].time
+
 
 proc processInputs(self: Game) = 
     # Player movement
@@ -121,8 +128,8 @@ proc update*(self: Game) =
     self.deltaTime = float(inMilliseconds(currentTime - self.lastUpdate))
     self.lastUpdate = currentTime
 
-    # Update level timer
-    self.levelTimer += self.deltaTime / 1000.0
+    # Update level timer - counts down till next event
+    self.levelTimer -= self.deltaTime / 1000.0
 
     # Check level spawns
     self.updateLevelSpawns()
