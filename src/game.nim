@@ -103,8 +103,10 @@ proc processInputs(self: Game) =
     var direction: (float, float) = normalize(xMove, yMove)
     if direction[0] != 0:
         self.player.loc.x += self.player.speed * self.deltaTime * direction[0]
+        self.player.loc.x = max(min(self.player.loc.x, 156 - 6), 0 + 6)
     if direction[1] != 0:
         self.player.loc.y += self.player.speed * self.deltaTime * direction[1]
+        self.player.loc.y = max(min(self.player.loc.y, 156 - 8), 0 + 8)
 
 proc drawAll(self: Game) = 
     # Draw background
