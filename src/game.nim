@@ -99,6 +99,13 @@ proc processInputs(self: Game) =
     if ord(Key.DownArrow) in self.keyboard:
         yMove = 1
 
+    if yMove < 0:
+        self.player.trail.state.set(ExhaustType.Slowing)
+    elif yMove > 0:
+        self.player.trail.state.set(ExhaustType.Boosting)
+    else:
+         self.player.trail.state.set(ExhaustType.Default)
+
     # Move player
     var direction: (float, float) = normalize(xMove, yMove)
     if direction[0] != 0:

@@ -3,6 +3,7 @@ from dom import ImageElement
 import jscanvas except Path
 import math
 
+import assets
 import gameobj
 from collision import ColliderBox, ColliderCircle, draw
 from draw import Drawable, SpriteDrawable, load, draw
@@ -11,13 +12,35 @@ import transform
 
 
 type
+    ExhaustType* = enum
+        Default, Boosting, Slowing
+
+    ExhaustState* = ref object
+        state: ExhaustType
+        changed: bool = false
+
+    PlayerExhaust* = ref object of GameObject
+        flickerRate*: float = 100.0
+        state*: ExhaustState = ExhaustState(state: ExhaustType.Default)
+
     Player* = ref object of GameObject
         health*: int = 3
         speed*: float = 0.2
-        trail: PlayerExhaust
-    
-    PlayerExhaust* = ref object of GameObject
-        flickerRate*: float = 100.0
+        trail*: PlayerExhaust
+
+## ExhaustState
+
+method get*(self: ExhaustState): ExhaustType =
+    return self.state
+
+method set*(self: ExhaustState, value: ExhaustType) {.base.} = 
+    self.state = value
+    self.changed = true
+
+method isChanged(self: ExhaustState): bool {.base.} =
+    let value = self.changed
+    self.changed = false
+    return value
 
 ## Player Exhaust
 
@@ -57,7 +80,7 @@ proc newPlayer*(): Player =
     player.sprite.parent = player
     player.trail = newPlayerExhaust()
     player.trail.parent = player
-    player.trail.loc.y = -10.0
+    player.trail.loc.y = -16.0
     
     var col: ColliderCircle = ColliderCircle(radius: 9)
     #col.drawOutline = true
@@ -79,6 +102,14 @@ method update*(self: Player, deltatime: float) =
     procCall self.GameObject.update(deltatime)
 
     self.trail.update(deltatime)
+    if self.trail.enabled:
+        if self.trail.state.isChanged():
+            if self.trail.state.get() == ExhaustType.Boosting:
+                SpriteDrawable(self.trail.sprite).spriteImage = assetCache["player_exhaust_fast.png"]
+            elif self.trail.state.get() == ExhaustType.Slowing:
+                SpriteDrawable(self.trail.sprite).spriteImage = assetCache["player_exhaust_slow.png"]
+            else:
+                SpriteDrawable(self.trail.sprite).spriteImage = assetCache["player_exhaust.png"]
 
     if self.health <= 0:
         self.die()
