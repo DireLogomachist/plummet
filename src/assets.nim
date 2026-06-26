@@ -9,6 +9,7 @@ var assetList*: seq[string] = @[
     "src/assets/player_exhaust.png",
     "src/assets/player_exhaust_slow.png",
     "src/assets/player_exhaust_fast.png",
+    "src/assets/bomber.png",
     "src/assets/diver.png",
     "src/assets/exploder.png",
     "src/assets/floater.png",

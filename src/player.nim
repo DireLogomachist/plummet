@@ -87,7 +87,7 @@ proc newPlayer*(): Player =
     player.addCollider(col)
     return player
 
-method draw*(self: Player, context: CanvasContext) {.base.} = 
+method draw*(self: Player, context: CanvasContext) = 
     if self.sprite.loaded != true:
         self.sprite.load()
     self.sprite.draw(context)

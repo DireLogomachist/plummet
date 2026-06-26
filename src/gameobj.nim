@@ -45,7 +45,7 @@ method update*(self: GameObject, deltatime: float) {.base.} =
     self.lifeTimer = self.lifeTimer + deltatime/1000
     self.updateCollisionTimer(deltatime)
 
-proc draw*(self: GameObject, context: CanvasContext) = 
+method draw*(self: GameObject, context: CanvasContext) {.base.} = 
     if self.sprite != nil:
         if self.sprite.loaded != true:
             self.sprite.load()
